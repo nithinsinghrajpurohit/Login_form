@@ -1,4 +1,5 @@
 // server.js
+import fetch from "node-fetch";
 import express from "express";
 import cors from "cors";
 import bcrypt from "bcrypt";
@@ -48,6 +49,17 @@ app.post("/register", async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   users.push({ fName, lname, email, password: hashedPassword });
   saveUsers(users);
+  try {
+  await fetch("https://script.google.com/d/1ZBxD6F0P4wxfYm3aDqfvSisqdog3U0wnTm8IDOFn4o40x1Hw0Qsor6X_/edit?usp=sharing", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ fName, lname, email })
+  });
+  console.log("✅ Sent to Google Sheet successfully");
+} catch (err) {
+  console.error("❌ Failed to send to Google Sheet:", err.message);
+}
+
 
   // 🟢 Send notification email
   const mailOptions = {
